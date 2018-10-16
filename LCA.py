@@ -16,6 +16,8 @@ def checkTwoLists(list1,list2):
     return ""
 
 def LCA(graph,n1,n2,n1Par = [], n2Par = []):
+    if (n1 == n2 and n1 in graph):
+        return n1
     graph = list(graph.items())
     n1Par.append(n1)
     n2Par.append(n2)
@@ -61,8 +63,8 @@ def LCA2(graph,n1,n2,n1Par,n2Par):
 
 
 
-graph.update({'BASE': ['B', 'C']})
-graph.update({'B': ['D', 'E']})
-graph.update({'C': ['F', 'G']})
-graph.update({'G': ['W', 'X']})
-print(LCA(graph, "F","B"))
+# graph.update({'BASE': ['B', 'C']})
+# graph.update({'B': ['D', 'E']})
+# graph.update({'C': ['F', 'G']})
+# graph.update({'G': ['W', 'X']})
+# print(LCA(graph, "F","B"))
