@@ -1,42 +1,70 @@
 #Node object for our binary tree.
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
-
+graph = {}
 #Checks if data is in given tree
-def contains(cur, node):
-    if cur.data == node:
-        return True
-    A = B = False
-    if cur.left != None:
-        A = contains(cur.left, node)
-    if cur.right != None:
-        B = contains(cur.right, node)
-    return A or B
 
-def LCA(cur, n1, n2):
-    if (n1 == n2):
+def getAllParents(graphList, node):
+    parents = []
+    for i in range(len(graphList)):
+        if (node in graphList[i][1]):
+            parents.append(graphList[i][0])
+    return parents
+
+def checkTwoLists(list1,list2):
+    for each in list1:
+        if each in list2:
+            return each
+    return ""
+
+def LCA(graph,n1,n2,n1Par = [], n2Par = []):
+    if (n1 == n2 and n1 in graph):
         return n1
-    #if n1 and n2 are in root.left
-    if (contains(cur.left, n1) and contains(cur.left, n2)):
-        return LCA(cur.left, n1, n2)
-    #if n1 and n2 are in root.right
-    elif (contains(cur.right, n1) and contains(cur.right, n2)):
-        return LCA(cur.right, n1, n2)
-    #if n1 and n2 are in root only
-    if (contains(root, n1) and contains(cur, n2)):
-        return cur.data
-    #Any other case
-    return None
+    graph = list(graph.items())
+    n1Par.append(n1)
+    n2Par.append(n2)
+    n1Par = getAllParents(graph,n1)
+    n2Par = getAllParents(graph,n2)
 
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.right.left = Node(5)
-root.right.right = Node(6)
+    val = checkTwoLists(n1Par,n2Par)
+    if (val != ""):
+        return val
+    if (n1 in n2Par):
+        return n1
+    if (n2 in n1Par):
+        return n2
 
-node1 = 5 ; node2 = 6
-print("The lowest common ancestor of {} and {} is {}".format(node1,node2,LCA(root, node1, node2)))
+    return LCA2(graph,n1,n2,n1Par,n2Par)
+def LCA2(graph,n1,n2,n1Par,n2Par):
+    newParents1 = n1Par[:]
+    for each1 in n1Par:
+        Parents = getAllParents(graph,each1)
+        for each2 in Parents:
+            if (each2 not in n1Par):
+                newParents1.append(each2)
+
+    newParents2 = n2Par[:]
+    for each1 in n2Par:
+        Parents = getAllParents(graph,each1)
+        for each2 in Parents:
+            if (each2 not in n2Par):
+                newParents2.append(each2)
+
+    if (newParents2 == n2Par and newParents1 == n1Par):
+        return ""
+    n2Par = newParents2
+    n1Par = newParents1
+    val = checkTwoLists(n1Par,n2Par)
+    if (val != ""):
+        return val
+    if (n1 in n2Par):
+        return n1
+    if (n2 in n1Par):
+        return n2
+    return LCA2(graph,n1,n2,n1Par,n2Par)
+
+
+
+# graph.update({'BASE': ['B', 'C']})
+# graph.update({'B': ['D', 'E']})
+# graph.update({'C': ['F', 'G']})
+# graph.update({'G': ['W', 'X']})
+# print(LCA(graph, "F","B"))
